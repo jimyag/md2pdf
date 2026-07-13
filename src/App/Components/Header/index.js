@@ -1,8 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import UploadButton from "./Upload.js";
+import FontPicker from "./FontPicker.js";
 const Header = ({ className }) => {
-  const onTransfrom = () => {
+  const onTransfrom = async () => {
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
     // get the file name
     let candidateTitle = "";
     const previewEl = document.querySelector(".preview");
@@ -35,6 +40,7 @@ const Header = ({ className }) => {
       />
 
       <div className="menu">
+        <FontPicker className="font-picker" />
         <UploadButton className="button upload" />
         <p className="button download" onClick={onTransfrom}>
           <span role="img" aria-label="download">
@@ -75,6 +81,34 @@ export default styled(Header)`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    .font-picker {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 80%;
+      margin-left: 3px;
+      button,
+      select {
+        height: 100%;
+        border: 1px solid black;
+        border-radius: 3px;
+        background: white;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:disabled {
+        cursor: wait;
+      }
+      select {
+        max-width: 180px;
+      }
+      .font-message {
+        color: #b00020;
+        font-weight: bold;
+        cursor: help;
+      }
+    }
     .button {
       height: 80%;
       margin: 0;

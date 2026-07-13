@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   padding: 10px;
   @media print {
     padding: 0;
-    overflow-y: hidden;
+    overflow: visible;
   }
 `;
 const LazyPreview = lazy(() => import('./Preview.js'));

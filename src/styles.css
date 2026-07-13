@@ -3,3 +3,21 @@ body,
 #root {
   height: 100%;
 }
+
+.markdown-body {
+  font-family: var(--markdown-font-family) !important;
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .preview {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
