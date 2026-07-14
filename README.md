@@ -34,6 +34,26 @@ The docker compose binds the web server to `localhost:8080` by default. You can 
 **Note**: This docker compose uses the build directive, so your system will go build and optimize the code itself.
 The application is hosted locally through nginx which is what binds to port 8080.
 
+## Command line
+
+Chrome or Chromium is required to generate the PDF.
+
+Download the executable for your platform from
+[GitHub Releases](https://github.com/jimyag/md2pdf/releases), or install it from
+the source checkout:
+
+```bash
+npm install -g .
+
+# Writes document.pdf next to document.md
+md2pdf document.md
+
+# Choose the output path
+md2pdf document.md -o output.pdf
+```
+
+Set `CHROME_PATH` if Chrome cannot be detected automatically.
+
 ## Tips
 - `Resize` the layout what you want.
 - After click `Transform` button, inverse the checkbox of **'Headers and Footers'**. 

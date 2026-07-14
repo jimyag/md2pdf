@@ -1,0 +1,89 @@
+name: Release binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: node24-linux-x64
+            asset: md2pdf-linux-x64
+          - os: ubuntu-24.04-arm
+            target: node24-linux-arm64
+            asset: md2pdf-linux-arm64
+          - os: macos-15-intel
+            target: node24-macos-x64
+            asset: md2pdf-macos-x64
+          - os: macos-15
+            target: node24-macos-arm64
+            asset: md2pdf-macos-arm64
+          - os: windows-latest
+            target: node24-win-x64
+            asset: md2pdf-windows-x64.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install runtime dependencies
+        run: npm install --omit=dev --ignore-scripts --no-audit --no-fund
+
+      - name: Set version from tag
+        shell: bash
+        run: npm version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
+
+      - name: Build executable
+        run: >-
+          npx --yes @yao-pkg/pkg@6.21.0 .
+          --targets ${{ matrix.target }}
+          --output dist/${{ matrix.asset }}
+          --compress Brotli
+
+      - name: Test executable
+        shell: bash
+        run: ./dist/${{ matrix.asset }} --version
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.asset }}
+          path: dist/${{ matrix.asset }}
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download executables
+        uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: sha256sum dist/* > dist/SHA256SUMS
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" dist/* --generate-notes --verify-tag --repo "$GITHUB_REPOSITORY"
+          fi

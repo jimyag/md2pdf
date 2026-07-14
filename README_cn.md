@@ -22,6 +22,25 @@ https://realdennis.github.io/md2pdf/
 4. 切换 'Destination' 为 **Save as PDF (以 PDF 保存)**.
 5. **建议您使用 Chrome 浏览器**
 
+## 命令行
+
+生成 PDF 需要本机安装 Chrome 或 Chromium。
+
+可以从 [GitHub Releases](https://github.com/jimyag/md2pdf/releases)
+下载对应平台的可执行文件，或者从源码目录安装：
+
+```bash
+npm install -g .
+
+# 默认在 document.md 旁生成 document.pdf
+md2pdf document.md
+
+# 指定输出路径
+md2pdf document.md -o output.pdf
+```
+
+如果无法自动找到 Chrome，可以通过 `CHROME_PATH` 指定浏览器路径。
+
 ## 提示
 - 根据需要`调整 (Resize)`布局大小.
 - 单击`Transform (转换)`按钮后，反转**Headers and Footers (页眉和页脚)**的复选框.
