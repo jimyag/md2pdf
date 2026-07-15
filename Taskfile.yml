@@ -1,0 +1,22 @@
+version: "3"
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmds:
+      - npm install
+
+  start:
+    desc: Start the web development server
+    cmds:
+      - NODE_OPTIONS=--openssl-legacy-provider npm start
+
+  build:
+    desc: Build the web app
+    cmds:
+      - NODE_OPTIONS=--openssl-legacy-provider npm run build
+
+  md2pdf:
+    desc: Convert Markdown to PDF with the local CLI
+    cmds:
+      - node bin/md2pdf.js {{.CLI_ARGS}}
