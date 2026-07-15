@@ -17,4 +17,4 @@ window.addEventListener('beforeunload', e => {
 });
 
 ReactDOM.render(<App />, rootElement);
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.unregister();
